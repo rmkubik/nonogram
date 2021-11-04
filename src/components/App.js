@@ -34,7 +34,7 @@ const padArrayStart = (array, value, count) => {
   return [...constructArray(() => value, count - array.length), ...array];
 };
 
-const puzzle = {
+const initialPuzzle = {
   dimensions: {
     width: 10,
     height: 10,
@@ -60,9 +60,10 @@ const puzzle = {
   },
 };
 
-const initialTiles = constructMatrix(() => ".", puzzle.dimensions);
+const initialTiles = constructMatrix(() => ".", initialPuzzle.dimensions);
 
 const App = () => {
+  const [puzzle, setPuzzle] = useState(initialPuzzle);
   const [tiles, setTiles] = useState(initialTiles);
   const [hints, setHints] = useState(puzzle.hints);
 
