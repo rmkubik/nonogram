@@ -1,5 +1,5 @@
 import { compareLocations, getDimensions } from "functional-game-utils";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 
 import Grid from "./Grid";
@@ -12,9 +12,8 @@ const BoardContainer = styled.div`
     ". top"
     "left grid";
 
-  margin: 2rem auto;
-  padding: 2rem;
-  max-width: 1200px;
+  margin-left: ${(props) => `-${props.leftOffset}px`};
+  margin-top: ${(props) => `-${props.topOffset}px`};
 `;
 
 const TopHintsContainer = styled.div`
@@ -40,6 +39,7 @@ const shouldBoldCol = (col, width) =>
  */
 const Tile = styled.div`
   box-sizing: border-box;
+  height: 2rem;
 
   border-top: ${(props) => (props.top ? "1px solid black" : "")};
   border-bottom: 1px solid black;
@@ -62,9 +62,22 @@ const Board = ({ tiles, hints, onTileClick }) => {
   });
   const { width, height } = getDimensions(tiles);
 
+  const [leftOffset, setLeftOffset] = useState(0);
+  const [topOffset, setTopOffset] = useState(0);
+  const leftHintsRef = useCallback((node) => {
+    if (node !== null) {
+      setLeftOffset(node.getBoundingClientRect().width);
+    }
+  }, []);
+  const topHintsRef = useCallback((node) => {
+    if (node !== null) {
+      setTopOffset(node.getBoundingClientRect().height);
+    }
+  }, []);
+
   return (
-    <BoardContainer>
-      <TopHintsContainer>
+    <BoardContainer leftOffset={leftOffset} topOffset={topOffset}>
+      <TopHintsContainer ref={topHintsRef}>
         <Grid
           tiles={hints.top}
           renderTile={(value, location) => (
@@ -72,7 +85,7 @@ const Board = ({ tiles, hints, onTileClick }) => {
           )}
         />
       </TopHintsContainer>
-      <LeftHintsContainer>
+      <LeftHintsContainer ref={leftHintsRef}>
         <Grid
           tiles={hints.left}
           renderTile={(value, location) => (

@@ -9,6 +9,7 @@ import { ThemeProvider } from "styled-components";
 import React, { useState } from "react";
 
 import Board from "./Board";
+import Center from "./Center";
 
 const theme = {
   tileSize: 32,
@@ -60,7 +61,7 @@ const initialPuzzle = {
   },
 };
 
-const initialTiles = constructMatrix(() => ".", initialPuzzle.dimensions);
+const initialTiles = constructMatrix(() => "", initialPuzzle.dimensions);
 
 const App = () => {
   const [puzzle, setPuzzle] = useState(initialPuzzle);
@@ -69,33 +70,35 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Board
-        tiles={tiles}
-        hints={hints}
-        onTileClick={(event, value, location) => {
-          let newValue = value;
+      <Center>
+        <Board
+          tiles={tiles}
+          hints={hints}
+          onTileClick={(event, value, location) => {
+            let newValue = value;
 
-          if (event.button === 0) {
-            // left click
-            if (value === "." || value === "❌") {
-              newValue = "⬛️";
-            } else {
-              newValue = ".";
+            if (event.button === 0) {
+              // left click
+              if (value === "" || value === "❌") {
+                newValue = "⬛️";
+              } else {
+                newValue = "";
+              }
+            } else if (event.button === 2) {
+              // right click
+              if (value === "" || value === "⬛️") {
+                newValue = "❌";
+              } else {
+                newValue = "";
+              }
             }
-          } else if (event.button === 2) {
-            // right click
-            if (value === "." || value === "⬛️") {
-              newValue = "❌";
-            } else {
-              newValue = ".";
-            }
-          }
 
-          const newTiles = updateMatrix(location, newValue, tiles);
+            const newTiles = updateMatrix(location, newValue, tiles);
 
-          setTiles(newTiles);
-        }}
-      />
+            setTiles(newTiles);
+          }}
+        />
+      </Center>
     </ThemeProvider>
   );
 };
