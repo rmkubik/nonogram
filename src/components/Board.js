@@ -12,6 +12,8 @@ const BoardContainer = styled.div`
     ". top"
     "left grid";
 
+  font-family: Helvetica, sans-serif;
+
   margin-left: ${(props) => `-${props.leftOffset}px`};
   margin-top: ${(props) => `-${props.topOffset}px`};
 `;
